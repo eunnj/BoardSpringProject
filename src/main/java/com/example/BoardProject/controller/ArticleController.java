@@ -38,7 +38,8 @@ public class ArticleController {
         log.info(saved.toString());
         // System.out.println(saved.toString());
 
-        return "";
+        // 리다이렉트 적용: 생성 후, 브라우저가 해당 URL로 재요청
+        return "redirect:/articles/" + saved.getId();
     }
 
 
