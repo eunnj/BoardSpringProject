@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
 @Slf4j // 로깅을 위한 어노테이션
@@ -79,5 +80,26 @@ public class ArticleController {
 
         // 뷰 페이지 설정
         return "articles/edit";
+    }
+
+    @PostMapping("/articles/update")
+    public String update(ArticleForm form){
+        log.info(form.toString());
+
+        // 1. DTO 엔티티 변환
+        Article articleEntity = form.toEntity();
+        log.info(articleEntity.toString());
+
+        // 2. 엔티티 DB로 저장
+        // 2-1: DB에 기존 데이터 가져온다
+        Article target = articleRepository.findById(articleEntity.getId()).orElse(null);
+
+        // 2-2: 기존 데이터에 값을 갱신
+        if(target != null){
+            articleRepository.save(articleEntity);
+        }
+
+        // 3. 수정 결과 페이지로 리다이렉트
+        return "redirect:/articles/"+articleEntity.getId();
     }
 }
